@@ -1,13 +1,19 @@
 package errors
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+// ErrInsufficientFunds is the error message
+var ErrInsufficientFunds = errors.New("cannot withdraw, insufficient amount")
 
 // Bitcoin of type float64
 type Bitcoin float64
 
 // Wallet is the struct which stores the bitcoin field.
 type Wallet struct {
-	balance Bitcoin
+	amount Bitcoin
 }
 
 func (b Bitcoin) String() string {
@@ -15,11 +21,20 @@ func (b Bitcoin) String() string {
 }
 
 // Deposit takes the bitcoin field for the wallet receiver.
-func (w *Wallet) Deposit(balance Bitcoin) {
-	w.balance += balance
+func (w *Wallet) Deposit(deposit Bitcoin) {
+	w.amount += deposit
 }
 
 // Balance returns the bitcoin field for the wallet receiver.
 func (w *Wallet) Balance() Bitcoin {
-	return w.balance
+	return w.amount
+}
+
+// Withdraw removes the given bitcoin field for the wallet receiver.
+func (w *Wallet) Withdraw(withdraw Bitcoin) error {
+	if w.amount < withdraw {
+		return ErrInsufficientFunds
+	}
+	w.amount -= withdraw
+	return nil
 }
