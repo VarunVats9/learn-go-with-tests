@@ -5,6 +5,8 @@ const (
 	ErrorNotFound = DictionaryErr("could not find the word you are looking for")
 	// ErrorWordExists specifies the error in case the key already exists.
 	ErrorWordExists = DictionaryErr("cannot add word as it already exists")
+	// ErrorWordDoesNotExists specifies the error in case the key does not exist, while updating
+	ErrorWordDoesNotExists = DictionaryErr("cannot update word as it does not exist")
 )
 
 // DictionaryErr is a type which implements error interface
@@ -42,4 +44,25 @@ func (d Dictionary) Add(word, definition string) error {
 	}
 
 	return nil
+}
+
+// Update takes key, and new value and replace the old value
+func (d Dictionary) Update(word, newDefinition string) error {
+	_, err := d.Search(word)
+
+	switch err {
+	case ErrorNotFound:
+		return ErrorWordDoesNotExists
+	case nil:
+		d[word] = newDefinition
+	default:
+		return err
+	}
+
+	return nil
+}
+
+// Delete takes key, and removes it
+func (d Dictionary) Delete(word string) {
+	delete(d, word)
 }
