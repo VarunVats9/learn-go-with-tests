@@ -7,20 +7,28 @@ import (
 
 const finalWord = "Go!"
 const countdownStart = 3
+const sleep = "sleep"
+const write = "write"
 
-// Sleeper interfac
+// Sleeper interface
 type Sleeper interface {
 	Sleep()
 }
 
-// SpySleeper contains Calls field
-type SpySleeper struct {
-	Calls int
+// CountdownOperationsSpy will have list of operations
+type CountdownOperationsSpy struct {
+	Calls []string
 }
 
-// Sleep counts number of times it is called
-func (s *SpySleeper) Sleep() {
-	s.Calls++
+// Sleep adds the sleep operation to the list of operations
+func (s *CountdownOperationsSpy) Sleep() {
+	s.Calls = append(s.Calls, sleep)
+}
+
+// Write adds the write operation to the list of operations
+func (s *CountdownOperationsSpy) Write(p []byte) (n int, err error) {
+	s.Calls = append(s.Calls, write)
+	return
 }
 
 // Countdown prints 3, 2, 1, Go!
